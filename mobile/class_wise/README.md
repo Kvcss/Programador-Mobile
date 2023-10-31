@@ -1,6 +1,6 @@
 # class_wise
 
-A new Flutter project.
+.
 
 ## Getting Started
 
