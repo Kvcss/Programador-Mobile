@@ -5,10 +5,11 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Vr software',
+      title: 'Class Wise - Vr software',
       theme: ThemeData(primarySwatch: Colors.blue),
       routerDelegate: Modular.routerDelegate,
       routeInformationParser: Modular.routeInformationParser,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
