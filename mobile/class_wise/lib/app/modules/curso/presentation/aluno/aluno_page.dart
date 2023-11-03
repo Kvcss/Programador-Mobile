@@ -108,8 +108,8 @@ class AlunoPagStateState extends State<AlunoPagState> {
           
           Padding(
             padding: const EdgeInsets.only(bottom: 30.0),
-            child: AddCourseButton(text: 'ADICIONAR ALUNO',onPressed: () {
-              
+            child: AddCourseButton(text: 'ADICIONAR ALUNO',onPressed: () async{
+              await Modular.to.popAndPushNamed('/addAluno');
             },),
           )
         ],
