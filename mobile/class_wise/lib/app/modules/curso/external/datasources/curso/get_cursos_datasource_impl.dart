@@ -1,7 +1,6 @@
 import 'package:class_wise/app/modules/shared/http/httpClient.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../data/datasources/get_cursos_datasource.dart';
+import '../../../data/datasources/curso/get_cursos_datasource.dart';
 
 final $GetCursosDataSourceImpl = Bind.singleton((i) => GetCursosDataSourceImpl(i()));
 

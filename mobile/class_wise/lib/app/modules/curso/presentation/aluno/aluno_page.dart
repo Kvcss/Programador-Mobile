@@ -2,6 +2,7 @@ import 'package:class_wise/app/modules/widget/addcurso_button.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
 import 'package:class_wise/app/modules/widget/search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class AlunoPagState extends StatefulWidget {
   const AlunoPagState({Key? key}) : super(key: key);
@@ -113,10 +114,12 @@ class AlunoPagStateState extends State<AlunoPagState> {
           )
         ],
       ),
-       bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () {
+        bottomNavigationBar: CustomBottomNavigationBar(
+        onSchoolPressed: () async{
+          await Modular.to.popAndPushNamed('/');
         },
-        onPersonPressed: () {
+        onPersonPressed: () async{
+          await Modular.to.popAndPushNamed('/aluno');
         },
         onAssignmentPressed: () {
         },

@@ -1,3 +1,4 @@
+import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/presentation/curso/home_controller.dart';
 import 'package:class_wise/app/modules/widget/addcurso_button.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
@@ -46,40 +47,52 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 5),
           const Text(
             'C U R S O S',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          const SearchBarApp(hintText: 'Buscar curso...',), 
+          const SearchBarApp(hintText: 'Buscar curso...'),
           const SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
               itemCount: controller.cursos.length,
               itemBuilder: (context, index) {
-                return CursoCard(curso: controller.cursos[index]); 
+                final model = controller.cursos[index];
+                return CursoCard(curso: controller.cursos[index]);
               },
             ),
           ),
-          const SizedBox(height: 20), 
+          const SizedBox(height: 28),
           AddCourseButton(
-            onPressed: () {
-              Modular.to.pushNamed('/add');
+            onPressed: () async {
+              var res =  await Modular.to.pushNamed('/addCurso', arguments: CursoDto(descricao: '',ementa: '',nomeCurso: '') );
+              if (res == true) {
+                getData();
+              }
             },
             text: 'ADICIONAR CURSO',
           ),
           const SizedBox(height: 20),
         ],
       ),
-       bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () {
+      bottomNavigationBar: CustomBottomNavigationBar(
+        onSchoolPressed: () async {
+          await Modular.to.popAndPushNamed('/');
         },
-        onPersonPressed: () {
+        onPersonPressed: () async {
+          await Modular.to.popAndPushNamed('/aluno');
         },
-        onAssignmentPressed: () {
-        },
+        onAssignmentPressed: () {},
       ),
     );
+  }
+
+  _updateCurso(CursoDto model) async {
+    var res = await Modular.to.pushNamed('/addCurso', arguments: model);
+    if (res == true) {
+      getData();
+    }
   }
 }

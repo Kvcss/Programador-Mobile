@@ -1,7 +1,7 @@
-import 'package:class_wise/app/modules/curso/data/datasources/get_cursos_datasource.dart';
-import 'package:class_wise/app/modules/curso/domain/models/dto/user_dto.dart';
+import 'package:class_wise/app/modules/curso/data/datasources/curso/get_cursos_datasource.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../domain/repositories/get_cursos_repository.dart';
+import '../../../domain/repositories/curso/get_cursos_repository.dart';
 
 final $GetCursosRepositoryImpl = Bind.singleton((i)=> GetCursosRepositoryImpl(i())); 
 class GetCursosRepositoryImpl implements GetCursosRepository {

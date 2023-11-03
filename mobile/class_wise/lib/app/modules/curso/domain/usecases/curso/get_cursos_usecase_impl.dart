@@ -1,4 +1,4 @@
-import 'package:class_wise/app/modules/curso/domain/repositories/get_cursos_repository.dart';
+import 'package:class_wise/app/modules/curso/domain/repositories/curso/get_cursos_repository.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'get_cursos_usecase.dart';
