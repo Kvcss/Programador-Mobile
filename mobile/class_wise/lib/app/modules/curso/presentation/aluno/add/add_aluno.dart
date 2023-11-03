@@ -52,7 +52,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              const Text('MATRICULE-SE:', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+              const Text('MATRICULAR:', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
@@ -75,8 +75,6 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     Text(selectedCurso ?? 'Escolher Curso', style: TextStyle(color: Colors.deepPurple, fontSize: 16)), 
               
                     const Icon(Icons.arrow_downward_rounded)
-
-                  
 
                   ],
                 ),
@@ -145,44 +143,76 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
     );
   }
 
-  void _showCursosBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+ void _showCursosBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
       ),
-      builder: (BuildContext context) {
-        return Container(
-          color: Colors.white,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+    ),
+    builder: (BuildContext context) {
+      return Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+             const SizedBox(height: 30),
+            const Center(
+              child: Text('Selecione uma opção:', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 23),),
+              
+            ),
+             const SizedBox(height: 30),
+              const Divider(
+                    color: Color(0xFF5900BD),
+                    thickness: 1.7,
+                    height: 0,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
+           
+            for (var curso in cursos)
               Column(
-
-                mainAxisSize: MainAxisSize.min,
-                children: cursos
-                    .map(
-                      (curso) => ListTile(
-                        title: Text(curso,style: const TextStyle(color: Color(0xFF5900BD), fontSize: 18, fontWeight: FontWeight.bold),),
-                        onTap: () {
-                          setState(() {
-                            selectedCurso = curso;
-                          });
-                          Navigator.pop(context);
-                        },
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            curso,
+                            style: const TextStyle(
+                              color: Color(0xFF5900BD),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              selectedCurso = curso;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                      
-                    )
-                    .toList(),
-
+                      const Icon(Icons.arrow_right_alt_outlined, color: Colors.deepPurple, size: 45),
+                    ],
+                  ),
+                  const Divider(
+                    color: Color(0xFF5900BD),
+                    thickness: 1.7,
+                    height: 0,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
 }

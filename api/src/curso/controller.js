@@ -57,6 +57,22 @@ const deleteCurso = (req, res) => {
         }
     );
 };
+const getCursoByLetter = (req, res) => {
+    const { letra } = req.params; // Supondo que a letra é passada como parâmetro na rota
+
+    pool.query(
+        queries.getCursosByLetter,
+        [letra],
+        (error, results) => {
+            if (error) {
+                res.status(500).json({ error: error.message });
+            } else {
+                res.status(200).json(results.rows);
+            }
+        }
+    );
+};
+
 
 
 
@@ -65,5 +81,6 @@ module.exports = {
     getCursos,
     postCurso,
     putCurso,
-    deleteCurso
+    deleteCurso,
+    getCursoByLetter
 }
