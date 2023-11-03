@@ -4,13 +4,13 @@ class CursoDto {
   final int? codigo;
   final String? descricao;
   final String? ementa;
-  final List<int>? imgCurso;
+
 
   CursoDto({
     this.codigo,
     this.descricao,
     this.ementa,
-    this.imgCurso,
+
   });
 
 
@@ -19,7 +19,7 @@ class CursoDto {
       codigo: json['codigo'],
       descricao: json['descricao'],
       ementa: json['ementa'],
-      imgCurso: json['img_curso'] != null ? base64.decode(json['img_curso']) : null,
+  
     );
   }
 
@@ -28,7 +28,6 @@ class CursoDto {
       'codigo': codigo,
       'descricao': descricao,
       'ementa': ementa,
-      'img_curso': imgCurso != null ? base64.encode(imgCurso!) : null,
     };
   }
 }
