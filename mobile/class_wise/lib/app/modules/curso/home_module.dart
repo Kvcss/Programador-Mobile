@@ -31,6 +31,7 @@ import 'package:class_wise/app/modules/curso/external/datasources/curso/delete_c
 import 'package:class_wise/app/modules/curso/external/datasources/curso/get_cursos_datasource_impl.dart';
 import 'package:class_wise/app/modules/curso/external/datasources/curso/update_curso_datasource.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/add/add_aluno.dart';
+import 'package:class_wise/app/modules/curso/presentation/aluno/add/add_aluno_controller.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/aluno_page.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/aluno_page_controller.dart';
 import 'package:class_wise/app/modules/curso/presentation/curso/add/add_curso_controller.dart';
@@ -85,7 +86,9 @@ class HomeModule extends Module {
     // Controllers 
     $HomeControler,
     $AddCursoController,
-    $AlunoController
+    $AlunoController,
+    $AddAlunoController,
+    
   ];
 
  @override

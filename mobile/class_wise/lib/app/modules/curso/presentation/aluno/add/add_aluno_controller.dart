@@ -6,6 +6,7 @@ import 'package:class_wise/app/modules/curso/domain/usecases/aluno/add_matricula
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/delete_matricula_usecase%20copy.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/get_aluno_usecase.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/update_aluno_usecase.dart';
+import 'package:class_wise/app/modules/curso/domain/usecases/curso/get_cursos_usecase.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -18,7 +19,7 @@ class AddAlunoController {
 
   final AddAlunoUseCase _addAlunoUseCase;
   final UpdateAlunoUseCase _updateAlunoUseCase;
-  final GetAlunoUseCase _getCursosUseCase;
+  final GetCursosUseCase _getCursosUseCase;
   final DeleteMatriculaUseCase _deleteMatriculaUseCase;
   final AddMatriculaUseCase _addMatriculaUseCase;
 

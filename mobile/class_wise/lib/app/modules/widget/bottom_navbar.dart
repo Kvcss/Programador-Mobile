@@ -32,11 +32,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               onPressed: onPersonPressed,
               color: Colors.white,
             ),
-            IconButton(
-              icon: const Icon(Icons.assignment),
-              onPressed: onAssignmentPressed,
-              color: Colors.white,
-            ),
+           
           ],
         ),
       ),

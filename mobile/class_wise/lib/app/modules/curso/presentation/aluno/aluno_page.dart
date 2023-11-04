@@ -1,3 +1,4 @@
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/aluno_page_controller.dart';
 import 'package:class_wise/app/modules/widget/addcurso_button.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
@@ -132,7 +133,7 @@ class AlunoPagStateState extends State<AlunoPagState> {
             child: AddCourseButton(
               text: 'ADICIONAR ALUNO',
               onPressed: () async {
-                await Modular.to.popAndPushNamed('/editAluno');
+                await Modular.to.popAndPushNamed('/editAluno', arguments: AlunoDto(nomeAluno: '',nomeCurso: ''));
               },
             ),
           )
