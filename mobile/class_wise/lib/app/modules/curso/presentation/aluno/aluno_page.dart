@@ -1,3 +1,4 @@
+import 'package:class_wise/app/modules/curso/presentation/aluno/aluno_page_controller.dart';
 import 'package:class_wise/app/modules/widget/addcurso_button.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
 import 'package:class_wise/app/modules/widget/search_bar.dart';
@@ -12,18 +13,17 @@ class AlunoPagState extends StatefulWidget {
 }
 
 class AlunoPagStateState extends State<AlunoPagState> {
-  List<Map<String, dynamic>> alunosData = [];
+  final controller = Modular.get<AlunoController>();
 
   @override
   void initState() {
     super.initState();
-    
-    alunosData = [
-      {"id": 1, "nome": "João"},
-      {"id": 2, "nome": "Maria"},
-      {"id": 3, "nome": "Pedro"},
-      // Adicione mais alunos conforme necessário
-    ];
+    getData();
+  }
+
+  void getData() async {
+    await controller.getData();
+    setState(() {});
   }
 
   @override
@@ -32,7 +32,7 @@ class AlunoPagStateState extends State<AlunoPagState> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-           Padding(
+          Padding(
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
@@ -50,14 +50,17 @@ class AlunoPagStateState extends State<AlunoPagState> {
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          const SearchBarApp(hintText: 'Buscar aluno...',), 
+          const SearchBarApp(
+            hintText: 'Buscar aluno...',
+          ),
           const SizedBox(height: 10),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(25),
               child: ListView.builder(
-                itemCount: alunosData.length,
+                itemCount: controller.aluno.length,
                 itemBuilder: (context, index) {
+                  final model = controller.aluno[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Container(
@@ -73,8 +76,14 @@ class AlunoPagStateState extends State<AlunoPagState> {
                             radius: 25,
                             backgroundColor: const Color(0xFF5900BD),
                             child: Text(
-                              alunosData[index]["nome"][0],
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                              model.nomeCurso != null && model.nomeCurso!.isNotEmpty
+                                  ? model.nomeCurso![0].toUpperCase()
+                                  : '',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -84,18 +93,31 @@ class AlunoPagStateState extends State<AlunoPagState> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  alunosData[index]["nome"],
+                                  model.nomeCurso ?? '',
                                   style: const TextStyle(color: Color(0xFF5900BD), fontWeight: FontWeight.bold, fontSize: 16),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 3),
                                 Text(
-                                  'ID: ${alunosData[index]["id"]}',
+                                  'Curso: ${model.nomeCurso}',
                                   style: const TextStyle(color: Color(0xFF5900BD), fontWeight: FontWeight.bold, fontSize: 11),
                                 ),
                               ],
                             ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Color(0xFF5900BD)),
+                            onPressed: () {
+                              
+                              Modular.to.pushNamed('/editAluno', arguments: model);
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color:const Color(0xFFC70039)),
+                            onPressed: () async{
+                              await controller.deleteAluno(model.codigoAluno);
+                            },
                           ),
                         ],
                       ),
@@ -105,25 +127,27 @@ class AlunoPagStateState extends State<AlunoPagState> {
               ),
             ),
           ),
-          
           Padding(
             padding: const EdgeInsets.only(bottom: 30.0),
-            child: AddCourseButton(text: 'ADICIONAR ALUNO',onPressed: () async{
-              await Modular.to.popAndPushNamed('/addAluno');
-            },),
+            child: AddCourseButton(
+              text: 'ADICIONAR ALUNO',
+              onPressed: () async {
+                await Modular.to.popAndPushNamed('/editAluno');
+              },
+            ),
           )
         ],
       ),
-        bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () async{
+      bottomNavigationBar: CustomBottomNavigationBar(
+        onSchoolPressed: () async {
           await Modular.to.popAndPushNamed('/');
         },
-        onPersonPressed: () async{
+        onPersonPressed: () async {
           await Modular.to.popAndPushNamed('/aluno');
         },
-        onAssignmentPressed: () {
-        },
+        onAssignmentPressed: () {},
       ),
     );
   }
 }
+

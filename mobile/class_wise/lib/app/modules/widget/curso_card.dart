@@ -84,18 +84,17 @@ class CursoCard extends StatelessWidget {
             ),
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert, color: Color(0xFF5900BD)),
-              onSelected: (String choice) async{
+              onSelected: (String choice) async {
                 if (choice == 'Editar') {
                   _updateCurso(curso);
-                } else if (choice == 'Excluir'){
-                 var res = await controller.deleteCurso(curso.codigo);
-                 if(res.succes == false){
-                     await alertdialog('Erro', 'O curso tem alunos vinculados',context, Icons.error);
-                 }else{
-                    await alertdialog('Sucesso', 'O curso foi removido',context, Icons.check_circle);
-                     await controller.getData();
-                     
-                 }
+                } else if (choice == 'Excluir') {
+                  var res = await controller.deleteCurso(curso.codigo);
+                  if (!res.succes) {
+                    await _showAlertDialog('Erro', 'O curso tem alunos vinculados', context, Icons.error);
+                  } else {
+                    await _showAlertDialog('Sucesso', 'O curso foi removido', context, Icons.check_circle);
+                    await controller.getData();
+                  }
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -104,7 +103,7 @@ class CursoCard extends StatelessWidget {
                     value: choice,
                     child: Row(
                       children: [
-                        choice == 'Editar' ? const Icon(Icons.edit, color: Color(0xFF5900BD)) : Icon(Icons.delete, color: const Color(0xFFC70039)),
+                        choice == 'Editar' ? const Icon(Icons.edit, color: Color(0xFF5900BD)) : const Icon(Icons.delete, color: Color(0xFFC70039)),
                         const SizedBox(width: 10),
                         Text(
                           choice,
@@ -124,76 +123,77 @@ class CursoCard extends StatelessWidget {
       ),
     );
   }
-   _updateCurso(CursoDto model) async {
-     await Modular.to.pushNamed('/addCurso', arguments: model);
-  
+
+  void _updateCurso(CursoDto model) async {
+    await Modular.to.pushNamed('/addCurso', arguments: model);
   }
-  Future<void> alertdialog(String title, String content, BuildContext context, IconData? icons) async {
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: 1),
-              duration: const Duration(milliseconds: 800),
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: child,
-                );
-              },
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color:  const Color(0xFF5900BD).withOpacity(0.1),
-                  shape: BoxShape.circle,
+
+  Future<void> _showAlertDialog(String title, String content, BuildContext context, IconData icon) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 800),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: child,
+                  );
+                },
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF5900BD).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 60,
+                    color: Color(0xFF5900BD),
+                  ),
                 ),
-                child: Icon(
-                  icons,
-                  size: 60,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                style: const TextStyle(
                   color: Color(0xFF5900BD),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Color(0xFF5900BD),
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
+              const SizedBox(height: 10),
+              Text(
+                content,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              content,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 35),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(
-                  color: Colors.purple,
-                  fontSize: 18,
+              const SizedBox(height: 35),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(
+                    color: Colors.purple,
+                    fontSize: 18,
+                  ),
                 ),
+                child: const Text('OK'),
+                onPressed: () async {
+                  await Modular.to.popAndPushNamed('/');
+                },
               ),
-              child: const Text('OK'),
-              onPressed: () async{
-                 await Modular.to.popAndPushNamed('/');
-              },
-            ),
-          ],
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-      );
-    },
-  );
-}
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        );
+      },
+    );
+  }
 }

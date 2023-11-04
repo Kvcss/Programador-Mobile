@@ -25,7 +25,7 @@ const putAluno = (req, res) => {
     const codigoAluno = req.params.codigoAluno; // Obtém o código do curso da URL
 
     pool.query(
-        queries.putCursos,[nome,codigoAluno],
+        queries.putAluno,[nome,codigoAluno],
         (error, results) => {
             if (error) {
                 res.status(500).json({ error: error.message });
@@ -40,22 +40,47 @@ const putAluno = (req, res) => {
     );
 };
 const getAlunosECursos = async () => {
-try {
-    const result = await pool.query(queries.getAlunoCurso);
-    return result.rows;
-  } catch (error) {
-    throw error;
-  }
-}
+    const query = `
+      SELECT 
+        a.codigo AS codigo_aluno,
+        a.nome AS nome_aluno, 
+        CASE  
+          WHEN c.nome_curso IS NOT NULL THEN c.nome_curso  
+          ELSE 'Sem curso' 
+        END AS nome_curso 
+      FROM 
+        aluno a 
+      LEFT JOIN 
+        curso_aluno ca ON a.codigo = ca.codigo_aluno 
+      LEFT JOIN 
+        curso c ON ca.codigo_curso = c.codigo;
+    `;
+  
+    try {
+      const result = await pool.query(query);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+
+
 const getAlunosByLetter = (req, res) => {
-    const { letra } = req.params; // Supondo que a letra é passada como parâmetro na rota
+    const { letra } = req.params;
 
     pool.query(
-        `SELECT a.id, a.nome AS nome_aluno, COALESCE(c.nome, 'Sem curso') AS nome_curso 
-        FROM aluno a
-        LEFT JOIN curso_aluno ca ON a.id = ca.id_aluno
-        LEFT JOIN curso c ON ca.id_curso = c.id
-        WHERE LOWER(SUBSTRING(a.nome FROM 1 FOR 1)) = LOWER($1)`,
+        `SELECT 
+            a.codigo AS codigo_aluno, 
+            a.nome AS nome_aluno, 
+            COALESCE(c.nome_curso, 'Sem curso') AS nome_curso 
+        FROM 
+            aluno a 
+        LEFT JOIN 
+            curso_aluno ca ON a.codigo = ca.codigo_aluno 
+        LEFT JOIN 
+            curso c ON ca.codigo_curso = c.codigo
+        WHERE LOWER(SUBSTRING(a.nome FROM 1 FOR 1)) = LOWER($1);`,
         [letra],
         (error, results) => {
             if (error) {
@@ -66,8 +91,9 @@ const getAlunosByLetter = (req, res) => {
     );
 };
 
+
 const deleteAluno = (req, res) => {
-    const { id } = req.params; // Supondo que o ID do aluno seja passado como parâmetro na rota
+    const {id} = req.params; // Supondo que o ID do aluno seja passado como parâmetro na rota
 
     pool.query(
         queries.deleteAluno,
@@ -76,7 +102,7 @@ const deleteAluno = (req, res) => {
             if (error) {
                 throw error;
             }
-            res.status(200).send(`Aluno ID: ${id} excluído com sucesso.`);
+            res.status(200).send({message:"Aluno excluído com sucesso.}"});
         }
     );
 };
@@ -104,10 +130,6 @@ const deleteCursoAluno = (req, res) => {
         }
     });
 };
-
-
-
-
 
 
 module.exports = {

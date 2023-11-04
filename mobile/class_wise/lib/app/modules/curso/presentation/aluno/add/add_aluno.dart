@@ -1,17 +1,41 @@
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/presentation/aluno/add/add_aluno_controller.dart';
+import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:class_wise/app/modules/widget/addcurso_button.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AddAlunoPage extends StatefulWidget {
+  const AddAlunoPage({
+    this.alunoDto
+  });
+
+  final AlunoDto? alunoDto;
   @override
   _AddAlunoPageState createState() => _AddAlunoPageState();
 }
 
 class _AddAlunoPageState extends State<AddAlunoPage> {
-  List<String> cursos = ['Curso A', 'Curso B', 'Curso C'];
+  final controller = Modular.get<AddAlunoController>();
+  final formKey = GlobalKey<FormState>();
+
+
+
+  
   String? selectedCurso;
   TextEditingController _alunoController = TextEditingController();
+
+  @override
+  void initSatate(){
+    super.initState();
+     
+      if(widget.alunoDto != null){
+        _alunoController.text = widget.alunoDto!.nomeAluno ?? '';
+      }
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +51,21 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 padding: const EdgeInsets.all(20.0),
                 child: Image.asset('assets/images/logo.png'),
               ),
-              const SizedBox(height: 15),
-              const Center(
-                child: Text(
-                  'A L U N O S',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                const SizedBox(height: 15),
+                const Center(
+                  child: Text(
+                    'A L U N O S',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 55,
-                child: TextFormField(
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 55,
+                  child: TextFormField(
+                    validator: (value) {
+                      if(value!.isEmpty) return 'required';
+                      return null;
+                  },
                   controller: _alunoController,
                   decoration: InputDecoration(
                     labelText: 'Nome do Aluno',
@@ -55,8 +83,9 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
               const Text('MATRICULAR:', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
-                  _showCursosBottomSheet(context);
+                onPressed: () async{
+                 var res =  await controller.getCurso();
+                  _showCursosBottomSheet(context, res.body);
                 },
                 style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.deepPurple,
@@ -71,10 +100,10 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
               
-                  children: [
-                    Text(selectedCurso ?? 'Escolher Curso', style: TextStyle(color: Colors.deepPurple, fontSize: 16)), 
+                children: [
+                  Text(selectedCurso ?? 'Escolher Curso', style: TextStyle(color: Colors.deepPurple, fontSize: 16)), 
               
-                    const Icon(Icons.arrow_downward_rounded)
+                  const Icon(Icons.arrow_downward_rounded)
 
                   ],
                 ),
@@ -90,16 +119,16 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                         selectedCurso = null;
                       });
                     },
-                    child: const Text('REMOVER MATRICULA'),
                     style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: const BorderSide(color: Colors.red, width: 2.5),
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: const BorderSide(color: Colors.red, width: 2.5),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                           backgroundColor: Colors.white,
                         ),
+                    child:  const Text('REMOVER MATRICULA'),
                   ),
                 ),
               ),
@@ -108,22 +137,41 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 child: SizedBox(
                   width: 350,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Lógica para desvincular o aluno do curso
+                    onPressed: () async{
+                       if (formKey.currentState!.validate()) {
+                        if(widget.alunoDto?.nomeAluno == ''){
+                           var res = await controller.addAluno(AlunoDto(nomeAluno:_alunoController.text ));
+
+                           if(res.succes){
+                            await alertdialog('Sucesso!','Aluno adicionado com sucesso!', context);
+                            await Modular.to.popAndPushNamed('/aluno');
+                           }else{
+                            await alertdialog('Erro!','Aluno nao cadastrado!', context,icon: Icon(Icons.error_outline));
+                            if(res.succes){
+                              await alertdialog('Sucesso!','Aluno adicionado com sucesso!', context);
+                            }else{
+                              alertdialog('Erro!','Informacao nao atualizada!', context,icon: Icon(Icons.error_outline));
+                            }
+                           }
+                        }else{
+                          var res = await controller.editAluno(AlunoDto(codigoAluno: widget.alunoDto!.codigoAluno, nomeAluno: _alunoController.text));
+                        }
+
+                       
+                       }
                       setState(() {
                         selectedCurso = null;
                       });
                     },
-                    child: const Text('SALVAR'),
-                    style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: const BorderSide(color: Colors.deepPurple, width: 2.5),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                          backgroundColor: Colors.deepPurple,
-                        ),
+                      style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: const BorderSide(color: Colors.deepPurple, width: 2.5),    ),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                      backgroundColor: Colors.deepPurple,
+                    ),
+                  child: const Text('SALVAR'),
                   ),
                 ),
               ),
@@ -143,7 +191,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
     );
   }
 
- void _showCursosBottomSheet(BuildContext context) {
+ void _showCursosBottomSheet(BuildContext context,ResponsePresentation res) {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -172,7 +220,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     endIndent: 0,
                   ),
            
-            for (var curso in cursos)
+            for (var curso in res.body)
               Column(
                 children: [
                   Row(
@@ -208,6 +256,74 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 ],
               ),
           ],
+        ),
+      );
+    },
+  );
+}
+Future<void> alertdialog(String title, String content, BuildContext context, {Icon? icon}) async {
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TweenAnimationBuilder(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 800),
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: child,
+                );
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color:  const Color(0xFF5900BD).withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child:  Icon(
+                  icon != null ? null : Icons.check_circle,
+                  size: 60,
+                  color: Color(0xFF5900BD),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF5900BD),
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              content,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 35),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(
+                  color: Colors.purple,
+                  fontSize: 18,
+                ),
+              ),
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
         ),
       );
     },
