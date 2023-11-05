@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/shared/http/httpClient.dart';
 import 'package:flutter_modular/flutter_modular.dart';

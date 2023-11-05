@@ -1,9 +1,6 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
-import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/update_aluno_repository.dart';
-import 'package:class_wise/app/modules/curso/domain/repositories/curso/update_curso_repository.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/update_aluno_usecase.dart';
-import 'package:class_wise/app/modules/curso/domain/usecases/curso/update_curso_usecase.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 

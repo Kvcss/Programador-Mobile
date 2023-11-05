@@ -1,11 +1,9 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
-import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/matricula_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/add_aluno_usecase.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/add_matricula_usecase%20copy.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/delete_matricula_usecase%20copy.dart';
-import 'package:class_wise/app/modules/curso/domain/usecases/aluno/get_aluno_usecase.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/update_aluno_usecase.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/curso/get_cursos_usecase.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';

@@ -1,8 +1,6 @@
 
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/delete_aluno_repository%20copy.dart';
-import 'package:class_wise/app/modules/curso/domain/repositories/curso/delete_curso_repository.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/delete_aluno_usecase.dart';
-import 'package:class_wise/app/modules/curso/domain/usecases/curso/delete_curso_usecase.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 

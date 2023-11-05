@@ -3,9 +3,7 @@ import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dar
 import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/matricula_dto.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/add/add_aluno_controller.dart';
-import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:class_wise/app/modules/widget/bottom_navbar.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -159,11 +157,10 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                           if (_status == 'Add') {
                             var res = await controller.addAluno(
                                 AlunoDtoAux(nomeAluno: _alunoController.text));
-                            print(res);
+              
                             if (res.codigo != null) {
                               if (_selectedCurso!.nomeCurso !=
                                   'Escolher Curso') {
-                                var ex = _selectedCurso!.codigo;
                                 var resp = await controller.addMatricula(
                                     MatriculaDto(
                                         codigoAluno: res.codigo,
@@ -176,7 +173,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                                       context,
                                       icon: const Icon(Icons.check_circle,
                                           size: 60,
-                                          color: const Color(0xFF5900BD)));
+                                          color:  Color(0xFF5900BD)));
                                 } else {
                                   // ignore: use_build_context_synchronously
                                   await alertDialog(
@@ -378,10 +375,10 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     shape: BoxShape.circle,
                   ),
                   child: icon ??
-                      Icon(
+                      const Icon(
                         Icons.check_circle,
                         size: 60,
-                        color: const Color(0xFF5900BD), // Cor do ícone
+                        color: Color(0xFF5900BD), // Cor do ícone
                       ),
                 ),
               ),

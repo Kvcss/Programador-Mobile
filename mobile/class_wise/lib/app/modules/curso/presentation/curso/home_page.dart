@@ -59,7 +59,6 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
               itemCount: controller.cursos.length,
               itemBuilder: (context, index) {
-                final model = controller.cursos[index];
                 return CursoCard(curso: controller.cursos[index]);
               },
             ),
@@ -89,10 +88,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _updateCurso(CursoDto model) async {
-    var res = await Modular.to.pushNamed('/addCurso', arguments: model);
-    if (res == true) {
-      getData();
-    }
-  }
 }

@@ -1,5 +1,4 @@
 import 'package:class_wise/app/modules/curso/data/datasources/aluno/add_aluno_datasource.dart';
-import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/shared/http/httpClient.dart';
 import 'package:flutter_modular/flutter_modular.dart';

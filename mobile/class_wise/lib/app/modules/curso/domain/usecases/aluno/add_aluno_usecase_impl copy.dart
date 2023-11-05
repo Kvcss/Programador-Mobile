@@ -1,13 +1,8 @@
-import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
-import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/add_aluno_repository%20copy.dart';
-import 'package:class_wise/app/modules/curso/domain/repositories/curso/add_curso_repository.dart';
-import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'add_aluno_usecase.dart';
-import 'dart:convert';
 
 final $AddAlunoUseCaseImpl = Bind.singleton((i)=> AddAlunoUseCaseImpl(i()));
 
