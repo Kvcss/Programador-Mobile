@@ -1,4 +1,5 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/add_aluno_repository%20copy.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/curso/add_curso_repository.dart';
@@ -6,6 +7,7 @@ import 'package:class_wise/app/modules/shared/response/response_presentation.dar
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'add_aluno_usecase.dart';
+import 'dart:convert';
 
 final $AddAlunoUseCaseImpl = Bind.singleton((i)=> AddAlunoUseCaseImpl(i()));
 
@@ -13,12 +15,13 @@ class AddAlunoUseCaseImpl implements AddAlunoUseCase {
   AddAlunoUseCaseImpl(this._addAlunoRepository);
   final AddAlunoRepository _addAlunoRepository;
   @override
-  Future<ResponsePresentation> call(AlunoDto dto) async{
+  Future<AlunoDtoAux> call(AlunoDtoAux dto) async{
     try{
     var res = await _addAlunoRepository(dto);
-    return ResponsePresentation(succes: true, body: res.toJson()); 
+   
+    return res; 
     }catch(e){
-    return ResponsePresentation(succes: false, message: e.toString());
+    throw e.toString();
     }
   }
 }

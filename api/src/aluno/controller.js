@@ -7,22 +7,38 @@ const getAlunos = (req, res)=>{pool.query(queries.getAluno, (error, results)=>{
 
 });
 }
-
 const postAluno = (req, res) => {
-    const {nome} = req.body;
+    const { nome } = req.body;
 
     pool.query(queries.postAluno, [nome], (error, results) => {
         if (error) {
             res.status(500).json({ error: error.message });
         } else {
-            res.status(201).send({ message: 'Aluno cadastrado' });
+            pool.query('SELECT codigo FROM aluno ORDER BY codigo DESC LIMIT 1', (err, rows) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    if (rows.rows.length > 0 && rows.rows[0].codigo) {
+                        const codigoAluno = rows.rows[0].codigo;
+                        res.status(201).send({ message: 'Aluno cadastrado', codigo: codigoAluno });
+                    } else {
+                        res.status(500).json({ error: "Nenhum código de aluno retornado." });
+                    }
+                }
+            });
         }
     });
 };
 
+
+
+
+
+
+
 const putAluno = (req, res) => {
     const {nome} = req.body;
-    const codigoAluno = req.params.codigoAluno; // Obtém o código do curso da URL
+    const codigoAluno = req.params.codigoAluno; 
 
     pool.query(
         queries.putAluno,[nome,codigoAluno],

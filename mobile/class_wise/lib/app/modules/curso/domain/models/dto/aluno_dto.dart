@@ -26,7 +26,7 @@ class AlunoDto {
   Map<String, dynamic> toJson() {
     return {
       'codigo_aluno' : codigoAluno,
-      'namo_aluno': nomeAluno,
+      'nome_aluno': nomeAluno,
       'nome_curso': nomeCurso,
       'codigo_matricula' : codigoMatricula
     };

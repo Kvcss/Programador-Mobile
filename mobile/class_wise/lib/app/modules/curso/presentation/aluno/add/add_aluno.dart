@@ -1,4 +1,5 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/matricula_dto.dart';
 import 'package:class_wise/app/modules/curso/presentation/aluno/add/add_aluno_controller.dart';
@@ -203,40 +204,26 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           if (_status == 'Add') {
-                            var res = await _postAluno();
-
-                            if (_selectedCurso?.nomeCurso != "Escolher Curso") {
-                              await controller.addMatricula(MatriculaDto(
-                                  codigoAluno: res["codigo_aluno"],
-                                  codigoCurso: _selectedCurso?.codigo));
-                            }
-                            if (res.isNotEmpty) {
-                              // ignore: use_build_context_synchronously
-                              await alertdialog('Sucesso!',
-                                  'Aluno adicionado com sucesso!', context);
-                              await Modular.to.popAndPushNamed('/aluno');
-                            } else {
-                              // ignore: use_build_context_synchronously
-                              await alertdialog(
-                                  'Erro!', 'Aluno não cadastrado!', context,
-                                  icon: const Icon(Icons.error_outline));
-                              if (res.isNotEmpty) {
+                            var res = await controller.addAluno(AlunoDtoAux(nomeAluno: _alunoController.text));
+                            print(res);
+                            if(res.codigo != null){
+                              if(_selectedCurso!.nomeCurso != 'Escolher Curso'){
+                                var ex = _selectedCurso!.codigo;
+                                var resp = await controller.addMatricula(MatriculaDto(codigoAluno: res.codigo, codigoCurso: _selectedCurso!.codigo));
+                                if(resp.succes){
+                                  // ignore: use_build_context_synchronously
+                                  await alertdialog('Sucesso','O aluno foi adicionado e matriculado!',context, icon: const Icon(Icons.check_circle_outline));
+                                }else{
+                                   // ignore: use_build_context_synchronously
+                                   await alertdialog('Erro','O aluno nao foi adicionado e matriculado',context, icon: const Icon(Icons.check_circle_outline));
+                                }
+                              }else{
                                 // ignore: use_build_context_synchronously
-                                await alertdialog('Sucesso!',
-                                    'Aluno adicionado com sucesso!', context);
-                              } else {
-                                // ignore: use_build_context_synchronously
-                                alertdialog('Erro!',
-                                    'Informação não atualizada!', context,
-                                    icon: const Icon(Icons.error_outline));
+                                await alertdialog('Sucesso','O aluno foi adicionado!!',context, icon: const Icon(Icons.check_circle_outline));
                               }
                             }
-                          } else {
-                            await controller.editAluno(AlunoDto(
-                                codigoAluno: widget.alunoDto!.codigoAluno,
-                                nomeAluno: _alunoController.text));
                           }
-                          await Modular.to.popAndPushNamed('/aluno');
+                          
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -402,8 +389,8 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                   ),
                 ),
                 child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () async{
+                  await Modular.to.popAndPushNamed('/aluno');
                 },
               ),
             ],
@@ -415,38 +402,4 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
       },
     );
   }
-  Future<Map<String, dynamic>> _postAluno() async {
-  final Dio dio = Dio();
-  final String apiUrl = 'http://10.0.2.2:3000/api/aluno'; 
-
-  try {
-    final Response response = await dio.post(
-      apiUrl,
-      data: {
-        'nomeAluno': _alunoController.text,
-        'codigoCurso': _selectedCurso?.codigo,
-       
-      },
-      options: Options(
-        headers: {
-          'Content-Type': 'application/json',
-        
-        },
-      ),
-    );
-
-    if (response.statusCode == 200) {
-    
-      return response.data as Map<String, dynamic>;
-    } else {
-      // Trate o erro ou a resposta inesperada
-      print('Erro: ${response.statusCode}');
-      return {'error': 'Aluno não cadastrado'};
-    }
-  } catch (e) {
-    // Trate os erros da requisição
-    print('Erro na requisição: $e');
-    return {'error': 'Algo deu errado'};
-  }
-}
 }

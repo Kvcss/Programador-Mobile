@@ -1,4 +1,5 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/curso_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/matricula_dto.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/add_aluno_usecase.dart';
@@ -23,7 +24,7 @@ class AddAlunoController {
   final DeleteMatriculaUseCase _deleteMatriculaUseCase;
   final AddMatriculaUseCase _addMatriculaUseCase;
 
-  Future<ResponsePresentation> addAluno(AlunoDto dto) async {
+  Future<AlunoDtoAux> addAluno(AlunoDtoAux dto) async {
     return await _addAlunoUseCase(dto);
   }
 
