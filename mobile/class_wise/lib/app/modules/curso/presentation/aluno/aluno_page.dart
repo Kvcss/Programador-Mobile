@@ -94,7 +94,7 @@ class AlunoPagStateState extends State<AlunoPagState> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  model.nomeCurso ?? '',
+                                  model.nomeAluno ?? '',
                                   style: const TextStyle(color: Color(0xFF5900BD), fontWeight: FontWeight.bold, fontSize: 16),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -110,14 +110,21 @@ class AlunoPagStateState extends State<AlunoPagState> {
                           IconButton(
                             icon: const Icon(Icons.edit, color: Color(0xFF5900BD)),
                             onPressed: () {
-                              
                               Modular.to.pushNamed('/editAluno', arguments: model);
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete, color:const Color(0xFFC70039)),
+                            icon: const Icon(Icons.delete, color: Color(0xFFC70039)),
                             onPressed: () async{
-                              await controller.deleteAluno(model.codigoAluno);
+                              var res = await controller.deleteAluno(model.codigoAluno);
+                              if(res.succes){
+                                // ignore: use_build_context_synchronously
+                                await _showAlertDialog('Sucesso', 'O aluno foi deletado!', context,Icons.check_circle);
+                                getData();
+                              }else{
+                                // ignore: use_build_context_synchronously
+                               await _showAlertDialog('Erro', 'O aluno esta matriculado!!Por favor remova a matricula antes de deletar!!', context,Icons.error);
+                              }
                             },
                           ),
                         ],
@@ -148,6 +155,74 @@ class AlunoPagStateState extends State<AlunoPagState> {
         },
         onAssignmentPressed: () {},
       ),
+    );
+  }
+   Future<void> _showAlertDialog(String title, String content, BuildContext context, IconData icon) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 800),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: child,
+                  );
+                },
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF5900BD).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 60,
+                    color: const Color(0xFF5900BD),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF5900BD),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                content,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 35),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(
+                    color: Colors.purple,
+                    fontSize: 18,
+                  ),
+                ),
+                child: const Text('OK'),
+                onPressed: () async {
+                  await Modular.to.popAndPushNamed('/aluno');
+                },
+              ),
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        );
+      },
     );
   }
 }

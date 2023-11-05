@@ -23,7 +23,6 @@ class AlunoController {
 
     if(!res.succes){
       aluno = [];
-      print(res.message);
       return;  
     }
     aluno = res.body as List<AlunoDto>; 

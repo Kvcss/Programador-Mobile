@@ -40,24 +40,9 @@ const putAluno = (req, res) => {
     );
 };
 const getAlunosECursos = async () => {
-    const query = `
-      SELECT 
-        a.codigo AS codigo_aluno,
-        a.nome AS nome_aluno, 
-        CASE  
-          WHEN c.nome_curso IS NOT NULL THEN c.nome_curso  
-          ELSE 'Sem curso' 
-        END AS nome_curso 
-      FROM 
-        aluno a 
-      LEFT JOIN 
-        curso_aluno ca ON a.codigo = ca.codigo_aluno 
-      LEFT JOIN 
-        curso c ON ca.codigo_curso = c.codigo;
-    `;
   
     try {
-      const result = await pool.query(query);
+      const result = await pool.query(queries.getAlunoCurso);
       return result.rows;
     } catch (error) {
       throw error;
@@ -93,19 +78,26 @@ const getAlunosByLetter = (req, res) => {
 
 
 const deleteAluno = (req, res) => {
-    const {id} = req.params; // Supondo que o ID do aluno seja passado como parâmetro na rota
+    const { id } = req.params; 
 
     pool.query(
         queries.deleteAluno,
         [id],
         (error, results) => {
             if (error) {
-                throw error;
+                return res.status(500).send({ message: "Erro ao excluir o aluno." });
             }
-            res.status(200).send({message:"Aluno excluído com sucesso.}"});
+
+            if (results.affectedRows === 0 && results.warningStatus === 0) {
+                res.status(404).send({ message: "Não foi possível encontrar o aluno para exclusão." });
+            } else {
+                res.status(200).send({ message: "Aluno excluído com sucesso." });
+            }
         }
     );
 };
+
+
 
 const postCursoAluno = (req, res) => {
     const { codigo_aluno, codigo_curso } = req.body;

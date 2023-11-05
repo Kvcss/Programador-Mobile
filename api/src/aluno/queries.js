@@ -4,11 +4,16 @@ const putAluno = "UPDATE aluno SET nome = $1 WHERE codigo = $2"
 const deleteAluno = "DELETE FROM aluno WHERE codigo = $1 AND NOT EXISTS (SELECT 1 FROM curso_aluno WHERE curso_aluno.codigo_aluno = aluno.codigo)"
 const getAlunoCurso = `
 SELECT 
+    a.codigo AS codigo_aluno,
     a.nome AS nome_aluno, 
+    CASE  
+        WHEN c.nome_curso <> 'Sem curso' THEN ca.codigo_curso
+        ELSE NULL
+    END AS codigo_matricula,
     CASE  
         WHEN c.nome_curso IS NOT NULL THEN c.nome_curso  
         ELSE 'Sem curso' 
-    END AS nome_curso 
+    END AS nome_curso
 FROM 
     aluno a 
 LEFT JOIN 
