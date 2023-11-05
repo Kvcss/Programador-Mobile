@@ -119,7 +119,7 @@ class _AddPageCursoState extends State<AddPageCurso> {
                     focusColor: const Color(0xFF5900BD),
                   ),
                 ),
-                const SizedBox(height: 100),
+                const SizedBox(height: 90),
                 AddCourseButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
@@ -152,21 +152,22 @@ class _AddPageCursoState extends State<AddPageCurso> {
                     }
                   },
                   text: 'SALVAR',
-                )
+                ),
+                 const SizedBox(height: 20),
+                 CustomBottomNavigationBar(
+                  onSchoolPressed: () async {
+                  await Modular.to.popAndPushNamed('/');
+                 },
+                  onPersonPressed: () async {
+                  await Modular.to.popAndPushNamed('/aluno');
+                  },),
+                 const SizedBox(height: 20),
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () async {
-          await Modular.to.popAndPushNamed('/');
-        },
-        onPersonPressed: () async {
-          await Modular.to.popAndPushNamed('/aluno');
-        },
-        onAssignmentPressed: () {},
-      ),
+
     );
   }
 

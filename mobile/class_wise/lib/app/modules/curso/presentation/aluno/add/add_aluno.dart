@@ -39,30 +39,30 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
   void initState() {
     super.initState();
 
-   if (widget.alunoDto!.nomeAluno != '') {
-  _alunoController.text = widget.alunoDto!.nomeAluno ?? '';
-  setState(() {
-    _status = "Edit";
-    _selectedCurso = CursoDto(
-      descricao: '',
-      ementa: '',
-      nomeCurso: widget.alunoDto!.nomeCurso,
-      codigo: widget.alunoDto!.codigoAluno,
-      // Adicione outros campos, se necessário
-    );
-  });
-} else {
-  _alunoController.text = 'Nome do aluno';
-  setState(() {
-    _status = "Add";
-    _selectedCurso = CursoDto(
-      descricao: '',
-      ementa: '',
-      nomeCurso: 'Selecione um curso',
-      // Adicione outros campos, se necessário
-    );
-  });
-}
+    if (widget.alunoDto!.nomeAluno != '') {
+      _alunoController.text = widget.alunoDto!.nomeAluno ?? '';
+      setState(() {
+        _status = "Edit";
+        _selectedCurso = CursoDto(
+          descricao: '',
+          ementa: '',
+          nomeCurso: widget.alunoDto!.nomeCurso,
+          codigo: widget.alunoDto!.codigoAluno,
+          // Adicione outros campos, se necessário
+        );
+      });
+    } else {
+      _alunoController.text = '';
+      setState(() {
+        _status = "Add";
+        _selectedCurso = CursoDto(
+          descricao: '',
+          ementa: '',
+          nomeCurso: 'Selecione um curso',
+          // Adicione outros campos, se necessário
+        );
+      });
+    }
   }
 
   @override
@@ -98,7 +98,8 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     },
                     controller: _alunoController,
                     decoration: InputDecoration(
-                      labelText: 'Nome do Aluno',
+                      // labelText: 'Nome do Aluno',
+                      hintText: 'Nome do Aluno',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7.0),
                         borderSide: const BorderSide(color: Color(0xFF5900BD)),
@@ -118,13 +119,11 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 ElevatedButton(
                   onPressed: () async {
                     try {
-                      var response =
-                          await controller.getCurso();
+                      var response = await controller.getCurso();
                       // ignore: use_build_context_synchronously
                       var cursos = response.body as List<CursoDto>;
                       // ignore: use_build_context_synchronously
                       _showCursosBottomSheet(context, cursos);
-              
                     } catch (e) {
                       throw e.toString();
                     }
@@ -156,6 +155,69 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     width: 350,
                     child: ElevatedButton(
                       onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          if (_status == 'Add') {
+                            var res = await controller.addAluno(
+                                AlunoDtoAux(nomeAluno: _alunoController.text));
+                            print(res);
+                            if (res.codigo != null) {
+                              if (_selectedCurso!.nomeCurso !=
+                                  'Escolher Curso') {
+                                var ex = _selectedCurso!.codigo;
+                                var resp = await controller.addMatricula(
+                                    MatriculaDto(
+                                        codigoAluno: res.codigo,
+                                        codigoCurso: _selectedCurso!.codigo));
+                                if (resp.succes) {
+                                  // ignore: use_build_context_synchronously
+                                  await alertDialog(
+                                      'Sucesso',
+                                      'O aluno foi adicionado e matriculado!',
+                                      context,
+                                      icon: const Icon(Icons.check_circle,
+                                          size: 60,
+                                          color: const Color(0xFF5900BD)));
+                                } else {
+                                  // ignore: use_build_context_synchronously
+                                  await alertDialog(
+                                      'Erro',
+                                      'O aluno nao foi adicionado e matriculado',
+                                      context,
+                                      icon: const Icon(
+                                          Icons.check_circle_outline));
+                                }
+                              } else {
+                                // ignore: use_build_context_synchronously
+                                await alertDialog('Sucesso',
+                                    'O aluno foi adicionado!!', context,
+                                    icon:
+                                        const Icon(Icons.check_circle_outline));
+                              }
+                            }
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: const BorderSide(
+                              color: Colors.deepPurple, width: 2.5),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 16),
+                        backgroundColor: const Color(0xFF5900BD),
+                      ),
+                      child: const Text('SALVAR'),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: SizedBox(
+                    width: 350,
+                    child: ElevatedButton(
+                      onPressed: () async {
                         if (_status == "Add") {
                           setState(() {
                             _selectedCurso = CursoDto(
@@ -168,7 +230,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                             await controller
                                 .deleteMatricula(widget.alunoDto!.codigoAluno!);
                             // ignore: use_build_context_synchronously
-                            alertdialog(
+                            alertDialog(
                                 'Sucesso', 'Matricula removida!', context,
                                 icon:
                                     const Icon(Icons.alternate_email_rounded));
@@ -196,64 +258,19 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 60),
                 Center(
-                  child: SizedBox(
-                    width: 350,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          if (_status == 'Add') {
-                            var res = await controller.addAluno(AlunoDtoAux(nomeAluno: _alunoController.text));
-                            print(res);
-                            if(res.codigo != null){
-                              if(_selectedCurso!.nomeCurso != 'Escolher Curso'){
-                                var ex = _selectedCurso!.codigo;
-                                var resp = await controller.addMatricula(MatriculaDto(codigoAluno: res.codigo, codigoCurso: _selectedCurso!.codigo));
-                                if(resp.succes){
-                                  // ignore: use_build_context_synchronously
-                                  await alertdialog('Sucesso','O aluno foi adicionado e matriculado!',context, icon: const Icon(Icons.check_circle_outline));
-                                }else{
-                                   // ignore: use_build_context_synchronously
-                                   await alertdialog('Erro','O aluno nao foi adicionado e matriculado',context, icon: const Icon(Icons.check_circle_outline));
-                                }
-                              }else{
-                                // ignore: use_build_context_synchronously
-                                await alertdialog('Sucesso','O aluno foi adicionado!!',context, icon: const Icon(Icons.check_circle_outline));
-                              }
-                            }
-                          }
-                          
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(
-                              color: Colors.deepPurple, width: 2.5),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 16),
-                        backgroundColor: Colors.deepPurple,
-                      ),
-                      child: const Text('SALVAR'),
-                    ),
-                  ),
+                  child: CustomBottomNavigationBar(onSchoolPressed: () async {
+                    await Modular.to.popAndPushNamed('/');
+                  }, onPersonPressed: () async {
+                    await Modular.to.popAndPushNamed('/aluno');
+                  }),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () async {
-          await Modular.to.popAndPushNamed('/');
-        },
-        onPersonPressed: () async {
-          await Modular.to.popAndPushNamed('/aluno');
-        },
-        onAssignmentPressed: () {},
       ),
     );
   }
@@ -261,79 +278,81 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
   void _showCursosBottomSheet(BuildContext context, List<CursoDto> cursos) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Container(
-          color: Colors.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 30),
-              const Center(
-                child: Text(
-                  'Selecione uma opção:',
-                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 23),
+        return ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          child: Container(
+            color: Colors.white, // Cor do container
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 30),
+                const Center(
+                  child: Text(
+                    'Selecione uma opção:',
+                    style:
+                        TextStyle(fontWeight: FontWeight.normal, fontSize: 23),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              const Divider(
-                color: Color(0xFF5900BD),
-                thickness: 1.7,
-                height: 0,
-                indent: 0,
-                endIndent: 0,
-              ),
-              for (var curso in cursos) // Iterar sobre os cursos recebidos
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              curso.nomeCurso ?? '', // Exibir o nome do curso
-                              style: const TextStyle(
-                                color: Color(0xFF5900BD),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                const SizedBox(height: 30),
+                const Divider(
+                  color: Color(0xFF5900BD),
+                  thickness: 1.7,
+                  height: 0,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+                for (var curso in cursos)
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ListTile(
+                              title: Text(
+                                curso.nomeCurso ?? '',
+                                style: const TextStyle(
+                                  color: Color(0xFF5900BD),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
+                              onTap: () {
+                                setState(() {
+                                  setCurso(curso);
+                                });
+                              },
                             ),
-                            onTap: () {
-                              setState(() {
-                                setCurso(curso);
-                              });
-                            },
                           ),
-                        ),
-                        const Icon(
-                          Icons.arrow_right_alt_outlined,
-                          color: Colors.deepPurple,
-                          size: 45,
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                      color: Color(0xFF5900BD),
-                      thickness: 1.7,
-                      height: 0,
-                      indent: 0,
-                      endIndent: 0,
-                    ),
-                  ],
-                ),
-            ],
+                          const Icon(
+                            Icons.arrow_right_alt_outlined,
+                            color: Colors.deepPurple,
+                            size: 45,
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        color: Color(0xFF5900BD),
+                        thickness: 1.7,
+                        height: 0,
+                        indent: 0,
+                        endIndent: 0,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Future<void> alertdialog(String title, String content, BuildContext context,
+  Future<void> alertDialog(String title, String content, BuildContext context,
       {Icon? icon}) async {
     await showDialog(
       context: context,
@@ -358,11 +377,12 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     color: const Color(0xFF5900BD).withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    icon != null ? null : Icons.check_circle,
-                    size: 60,
-                    color: const Color(0xFF5900BD),
-                  ),
+                  child: icon ??
+                      Icon(
+                        Icons.check_circle,
+                        size: 60,
+                        color: const Color(0xFF5900BD), // Cor do ícone
+                      ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -384,12 +404,12 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
               TextButton(
                 style: TextButton.styleFrom(
                   textStyle: const TextStyle(
-                    color: Colors.purple,
+                    color: Color(0xFF5900BD), // Cor do botão
                     fontSize: 18,
                   ),
                 ),
                 child: const Text('OK'),
-                onPressed: () async{
+                onPressed: () async {
                   await Modular.to.popAndPushNamed('/aluno');
                 },
               ),

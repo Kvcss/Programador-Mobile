@@ -143,17 +143,19 @@ class AlunoPagStateState extends State<AlunoPagState> {
                 await Modular.to.popAndPushNamed('/editAluno', arguments: AlunoDto(nomeAluno: '',nomeCurso: ''));
               },
             ),
-          )
+          ),
+               const SizedBox(height: 20),
+                 Center(
+                   child: CustomBottomNavigationBar(
+                    onSchoolPressed: () async {
+                    await Modular.to.popAndPushNamed('/');
+                   },
+                    onPersonPressed: () async {
+                    await Modular.to.popAndPushNamed('/aluno');
+                    },),
+                 ),
+                 const SizedBox(height: 20),
         ],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        onSchoolPressed: () async {
-          await Modular.to.popAndPushNamed('/');
-        },
-        onPersonPressed: () async {
-          await Modular.to.popAndPushNamed('/aluno');
-        },
-        onAssignmentPressed: () {},
       ),
     );
   }

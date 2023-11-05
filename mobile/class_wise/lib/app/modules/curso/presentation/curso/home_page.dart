@@ -75,16 +75,16 @@ class _HomePageState extends State<HomePage> {
             text: 'ADICIONAR CURSO',
           ),
           const SizedBox(height: 20),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
+          CustomBottomNavigationBar(
         onSchoolPressed: () async {
           await Modular.to.popAndPushNamed('/');
         },
         onPersonPressed: () async {
           await Modular.to.popAndPushNamed('/aluno');
         },
-        onAssignmentPressed: () {},
+      ),
+      const SizedBox(height: 20),
+        ],
       ),
     );
   }
