@@ -50,7 +50,6 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
           ementa: '',
           nomeCurso: widget.alunoDto!.nomeCurso,
           codigo: widget.alunoDto!.codigoAluno,
-          // Adicione outros campos, se necessário
         );
       });
     } else {
@@ -61,7 +60,6 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
           descricao: '',
           ementa: '',
           nomeCurso: 'Selecione um curso',
-          // Adicione outros campos, se necessário
         );
       });
     }
@@ -100,7 +98,6 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                     },
                     controller: _alunoController,
                     decoration: InputDecoration(
-                      // labelText: 'Nome do Aluno',
                       hintText: 'Nome do Aluno',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7.0),

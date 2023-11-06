@@ -14,10 +14,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      width: 120, // Definir a largura desejada
+      width: 120, 
       decoration: BoxDecoration(
-        color: const Color(0xFF5900BD), // Cor de fundo do contêiner
-        borderRadius: BorderRadius.circular(10), // Borda com raio de 30 para torná-lo redondo
+        color: const Color(0xFF5900BD), 
+        borderRadius: BorderRadius.circular(10), 
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
