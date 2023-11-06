@@ -6,7 +6,7 @@ const { getAlunosECursos } = require('./controller');
 router.get('/', controller.getAlunos);
 router.post('/', controller.postAluno)
 router.put('/:codigoAluno', controller.putAluno)
-router.delete('/:id', controller.deleteAluno)
+router.delete('/:codigoAluno', controller.deleteAluno)
 router.get('/alunoCurso/:letra', controller.getAlunosByLetter)
 //router.get('/alunoCurso', controller.getAlunosECursos)
 router.post('/alunoCurso', controller.postMatricula)

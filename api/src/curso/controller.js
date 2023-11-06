@@ -57,6 +57,7 @@ const deleteCurso = (req, res) => {
         }
     );
 };
+
 const getCursoByLetter = (req, res) => {
     const { letra } = req.params; // Supondo que a letra é passada como parâmetro na rota
 

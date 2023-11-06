@@ -117,13 +117,12 @@ class AlunoPagStateState extends State<AlunoPagState> {
                             icon: const Icon(Icons.delete, color: Color(0xFFC70039)),
                             onPressed: () async{
                               var res = await controller.deleteAluno(model.codigoAluno);
-                              if(res.succes){
+                              if(!res.succes){
+                                await _showAlertDialog('Erro', 'O aluno está matriculado!!Por favor remova a matricula antes de deletar!!', context,Icons.error);
+                              }else{
                                 // ignore: use_build_context_synchronously
                                 await _showAlertDialog('Sucesso', 'O aluno foi deletado!', context,Icons.check_circle);
                                 getData();
-                              }else{
-                                // ignore: use_build_context_synchronously
-                               await _showAlertDialog('Erro', 'O aluno esta matriculado!!Por favor remova a matricula antes de deletar!!', context,Icons.error);
                               }
                             },
                           ),

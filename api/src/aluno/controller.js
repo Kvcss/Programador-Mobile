@@ -94,24 +94,25 @@ const getAlunosByLetter = (req, res) => {
 
 
 const deleteAluno = (req, res) => {
-    const { id } = req.params; 
+    const codigoAluno = req.params.codigoAluno;
 
     pool.query(
-        queries.deleteAluno,
-        [id],
+        queries.deleteAluno, [codigoAluno],
         (error, results) => {
             if (error) {
-                return res.status(500).send({ message: "Erro ao excluir o aluno." });
-            }
-
-            if (results.affectedRows === 0 && results.warningStatus === 0) {
-                res.status(404).send({ message: "Não foi possível encontrar o aluno para exclusão." });
+                res.status(500).json({ error: error.message });
             } else {
-                res.status(200).send({ message: "Aluno excluído com sucesso." });
+                if (results.rowCount === 0) {
+                    res.status(404).json({ message: 'O aluno está matriculado' });
+                } else if (results.rowCount > 0) {
+                    res.status(200).json({ message: 'Aluno excluído' });
+                }
             }
         }
     );
 };
+
+
 
 
 
