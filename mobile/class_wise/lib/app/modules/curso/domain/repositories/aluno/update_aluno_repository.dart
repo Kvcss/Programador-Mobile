@@ -1,5 +1,5 @@
-import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 
 abstract class UpdateAlunoRepository {
-  Future<AlunoDto> call(AlunoDto dto);
+  Future<AlunoDtoAux> call(AlunoDtoAux dto);
 }

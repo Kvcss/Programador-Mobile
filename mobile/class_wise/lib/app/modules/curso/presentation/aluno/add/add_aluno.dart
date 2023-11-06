@@ -24,13 +24,17 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
   final formKey = GlobalKey<FormState>();
   String? _status;
   CursoDto? _selectedCurso;
+  bool? validRematricula = false;
   final TextEditingController _alunoController = TextEditingController();
 
-  void setCurso(CursoDto curso) {
+  void setCurso(CursoDto curso,{bool pop = true}) {
     setState(() {
       _selectedCurso = curso;
+      validRematricula = true;
     });
-    Navigator.pop(context);
+    if(pop == true){
+       Navigator.pop(context);
+    }
   }
 
   @override
@@ -116,14 +120,26 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () async {
-                    try {
-                      var response = await controller.getCurso();
-                      // ignore: use_build_context_synchronously
-                      var cursos = response.body as List<CursoDto>;
-                      // ignore: use_build_context_synchronously
-                      _showCursosBottomSheet(context, cursos);
-                    } catch (e) {
-                      throw e.toString();
+                    if (_status == "Edit" &&
+                        validRematricula == false &&
+                        _selectedCurso!.nomeCurso != 'Sem curso' && _selectedCurso!.nomeCurso != 'Selecione um curso') {
+                      await alertDialog(
+                          'Eror',
+                          'Você precisa remover a matricula antes de altera-la!',
+                          context,
+                          icon: const Icon(Icons.error_outline_rounded,
+                              size: 60, color: Color(0xFF5900BD)),
+                          pop: true);
+                    } else {
+                      try {
+                        var response = await controller.getCurso();
+                        // ignore: use_build_context_synchronously
+                        var cursos = response.body as List<CursoDto>;
+                        // ignore: use_build_context_synchronously
+                        _showCursosBottomSheet(context, cursos);
+                      } catch (e) {
+                        throw e.toString();
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -140,7 +156,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(_selectedCurso?.nomeCurso ?? 'Escolher Curso',
+                      Text(_selectedCurso?.nomeCurso ?? 'Selecione um curso',
                           style: const TextStyle(
                               color: Colors.deepPurple, fontSize: 16)),
                       const Icon(Icons.arrow_downward_rounded)
@@ -157,10 +173,10 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                           if (_status == 'Add') {
                             var res = await controller.addAluno(
                                 AlunoDtoAux(nomeAluno: _alunoController.text));
-              
+
                             if (res.codigo != null) {
                               if (_selectedCurso!.nomeCurso !=
-                                  'Escolher Curso') {
+                                  'Selecione um curso') {
                                 var resp = await controller.addMatricula(
                                     MatriculaDto(
                                         codigoAluno: res.codigo,
@@ -172,8 +188,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                                       'O aluno foi adicionado e matriculado!',
                                       context,
                                       icon: const Icon(Icons.check_circle,
-                                          size: 60,
-                                          color:  Color(0xFF5900BD)));
+                                          size: 60, color: Color(0xFF5900BD)));
                                 } else {
                                   // ignore: use_build_context_synchronously
                                   await alertDialog(
@@ -187,10 +202,25 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                                 // ignore: use_build_context_synchronously
                                 await alertDialog('Sucesso',
                                     'O aluno foi adicionado!!', context,
-                                    icon:
-                                        const Icon(Icons.check_circle_outline));
+                                    icon: const Icon(Icons.check_circle,
+                                        size: 60, color: Color(0xFF5900BD)));
                               }
                             }
+                          } else {
+                            await controller.editAluno(AlunoDtoAux(
+                                codigo: widget.alunoDto!.codigoAluno,
+                                nomeAluno: _alunoController.text));
+
+                            if (_selectedCurso!.nomeCurso != 'Sem curso' && _selectedCurso!.nomeCurso != 'Selecione um curso') {
+                              await controller.addMatricula(MatriculaDto(
+                                  codigoAluno: widget.alunoDto!.codigoAluno,
+                                  codigoCurso: _selectedCurso!.codigo));
+                            }
+                            // ignore: use_build_context_synchronously
+                            await alertDialog('Sucesso',
+                                'Os dados foram alterados!!', context,
+                                icon: const Icon(Icons.check_circle,
+                                    size: 60, color: Color(0xFF5900BD)));
                           }
                         }
                       },
@@ -220,24 +250,30 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                             _selectedCurso = CursoDto(
                                 descricao: '',
                                 ementa: '',
-                                nomeCurso: 'Escolher Curso');
+                                nomeCurso: 'Selecione um curso');
                           });
                         } else {
-                          if (!(widget.alunoDto?.nomeCurso == null)) {
-                            await controller
-                                .deleteMatricula(widget.alunoDto!.codigoAluno!);
+                          // validRematricula == true;
+                          if (widget.alunoDto?.nomeCurso != 'Sem curso' &&widget.alunoDto?.nomeCurso != 'Selecione um curso') {
+                            await controller.deleteMatricula(
+                                widget.alunoDto!.codigoMatricula);
+                            validRematricula = true;
+                            setCurso(CursoDto(
+                              descricao: '',
+                              ementa: '',
+                              nomeCurso: 'Selecione um curso', 
+                            ), pop: false);
                             // ignore: use_build_context_synchronously
-                            alertDialog(
+                            await alertDialog(
                                 'Sucesso', 'Matricula removida!', context,
-                                icon:
-                                    const Icon(Icons.alternate_email_rounded));
+                                icon: const Icon(Icons.check_circle,
+                                    size: 60, color: Color(0xFF5900BD)),
+                                pop: true);
                           } else {
-                            setState(() {
-                              _selectedCurso = CursoDto(
+                            setCurso(CursoDto(
                                   descricao: '',
                                   ementa: '',
-                                  nomeCurso: 'Escolher Curso');
-                            });
+                                  nomeCurso: 'Selecione um curso'), pop: false);
                           }
                         }
                       },
@@ -350,7 +386,7 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
   }
 
   Future<void> alertDialog(String title, String content, BuildContext context,
-      {Icon? icon}) async {
+      {Icon? icon, bool pop = false}) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -407,7 +443,11 @@ class _AddAlunoPageState extends State<AddAlunoPage> {
                 ),
                 child: const Text('OK'),
                 onPressed: () async {
-                  await Modular.to.popAndPushNamed('/aluno');
+                  if (pop == true) {
+                    Navigator.of(context).pop();
+                  } else {
+                    await Modular.to.popAndPushNamed('/aluno');
+                  }
                 },
               ),
             ],

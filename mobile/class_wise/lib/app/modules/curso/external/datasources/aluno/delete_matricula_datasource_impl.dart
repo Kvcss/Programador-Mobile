@@ -11,7 +11,7 @@ class DeleteMatriculaDataSourceImpl implements DeleteMatriculaDataSource {
   final HttpClientApp _client;
 
   @override
-  Future<Map<String, dynamic>> call(int codigo) async {
+  Future<Map<String, dynamic>> call(int? codigo) async {
     var res = await _client.delete('/api/aluno/alunoCurso/$codigo');
     return Map.from(res);
   }

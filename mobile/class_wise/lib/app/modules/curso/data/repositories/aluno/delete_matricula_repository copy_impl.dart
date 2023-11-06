@@ -12,7 +12,7 @@ class DeleteMatriculaRepositoryImpl implements DeleteMatriculaRepository {
   final DeleteMatriculaDataSource _deleteMatriculaDataSource;
 
   @override
-  Future<MatriculaDto> call(int codigo) async {
+  Future<MatriculaDto> call(int? codigo) async {
     try {
       var res = await _deleteMatriculaDataSource(codigo);
       return MatriculaDto.fromJson(res);

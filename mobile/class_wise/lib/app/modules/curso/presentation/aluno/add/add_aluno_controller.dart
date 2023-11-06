@@ -26,7 +26,7 @@ class AddAlunoController {
     return await _addAlunoUseCase(dto);
   }
 
-  Future<ResponsePresentation> editAluno(AlunoDto dto) async {
+  Future<ResponsePresentation> editAluno(AlunoDtoAux dto) async {
     return await _updateAlunoUseCase(dto);
 
   }
@@ -34,7 +34,7 @@ class AddAlunoController {
     return await _getCursosUseCase();
     
     }
-  Future<ResponsePresentation> deleteMatricula(int codigo) async {
+  Future<ResponsePresentation> deleteMatricula(int? codigo) async {
     return await _deleteMatriculaUseCase(codigo);
     
     }

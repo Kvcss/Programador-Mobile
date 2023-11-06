@@ -1,5 +1,6 @@
 import 'package:class_wise/app/modules/curso/data/datasources/aluno/update_aluno_datasource.dart';
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/update_aluno_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -13,10 +14,10 @@ class UpdateAlunoRepositoryImpl implements UpdateAlunoRepository {
   final UpdateAlunoDataSource _updateAlunoDataSource;
 
   @override
-  Future<AlunoDto> call(AlunoDto dto) async {
+  Future<AlunoDtoAux> call(AlunoDtoAux dto) async {
     try {
       var res = await _updateAlunoDataSource(dto);
-      return AlunoDto.fromJson(res);
+      return AlunoDtoAux.fromJson(res);
     } catch (e) {
       rethrow;
     }

@@ -13,7 +13,7 @@ class DeleteMatriculaUseCaseImpl implements DeleteMatriculaUseCase {
   final DeleteMatriculaRepository _deleteMatriculaRepository;
 
   @override
-  Future<ResponsePresentation> call(int codigo) async {
+  Future<ResponsePresentation> call(int? codigo) async {
     try {
       var res = await _deleteMatriculaRepository(codigo);
       return ResponsePresentation(succes: true, body: res);

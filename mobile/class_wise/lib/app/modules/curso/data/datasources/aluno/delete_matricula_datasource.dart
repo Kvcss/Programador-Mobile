@@ -1,3 +1,3 @@
 abstract class DeleteMatriculaDataSource {
-  Future<Map<String, dynamic>> call(int codigo);
+  Future<Map<String, dynamic>> call(int? codigo);
 }

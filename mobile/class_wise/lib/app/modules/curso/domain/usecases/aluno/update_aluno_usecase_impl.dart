@@ -1,4 +1,5 @@
 import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto.dart';
+import 'package:class_wise/app/modules/curso/domain/models/dto/aluno_dto_aux.dart';
 import 'package:class_wise/app/modules/curso/domain/repositories/aluno/update_aluno_repository.dart';
 import 'package:class_wise/app/modules/curso/domain/usecases/aluno/update_aluno_usecase.dart';
 import 'package:class_wise/app/modules/shared/response/response_presentation.dart';
@@ -14,7 +15,7 @@ class UpdateAlunoUseCaseImpl implements UpdateAlunoUseCase {
   final UpdateAlunoRepository _updateAlunoRepository;
 
   @override
-  Future<ResponsePresentation> call(AlunoDto userDto) async {
+  Future<ResponsePresentation> call(AlunoDtoAux userDto) async {
     try {
       var res = await _updateAlunoRepository(userDto);
       return ResponsePresentation(succes: true, body: res);
