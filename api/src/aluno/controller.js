@@ -115,10 +115,10 @@ const deleteAluno = (req, res) => {
 
 
 
-const postCursoAluno = (req, res) => {
+const postMatricula = (req, res) => {
     const { codigo_aluno, codigo_curso } = req.body;
 
-    pool.query(queries.postAlunoCurso, [codigo_aluno, codigo_curso], (error, results) => {
+    pool.query(queries.postMatricula, [codigo_aluno, codigo_curso], (error, results) => {
         if (error) {
             res.status(500).json({ error: error.message });
         } else {
@@ -127,10 +127,10 @@ const postCursoAluno = (req, res) => {
     });
 };
 
-const deleteCursoAluno = (req, res) => {
-    const { codigo_aluno, codigo_curso } = req.body;
+const deleteMatricula = (req, res) => {
+    const {codigo} = req.params;
 
-    pool.query(queries.deleteAlunoCurso, [codigo_aluno, codigo_curso], (error, results) => {
+    pool.query(queries.deleteMatricula, [codigo], (error, results) => {
         if (error) {
             res.status(500).json({ error: error.message });
         } else {
@@ -147,6 +147,6 @@ module.exports = {
     getAlunosECursos,
     getAlunosByLetter,
     deleteAluno,
-    postCursoAluno,
-    deleteCursoAluno
+    postMatricula,
+    deleteMatricula
 }

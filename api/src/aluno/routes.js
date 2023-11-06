@@ -9,8 +9,8 @@ router.put('/:codigoAluno', controller.putAluno)
 router.delete('/:id', controller.deleteAluno)
 router.get('/alunoCurso/:letra', controller.getAlunosByLetter)
 //router.get('/alunoCurso', controller.getAlunosECursos)
-router.post('/alunoCurso', controller.postCursoAluno)
-router.delete('/alunoCurso', controller.deleteCursoAluno)
+router.post('/alunoCurso', controller.postMatricula)
+router.delete('/alunoCurso/:codigo', controller.deleteMatricula)
 
 router.get('/alunoCurso', async (req, res) => {
     try {

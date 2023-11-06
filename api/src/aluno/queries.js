@@ -7,7 +7,7 @@ SELECT
     a.codigo AS codigo_aluno,
     a.nome AS nome_aluno, 
     CASE  
-        WHEN c.nome_curso <> 'Sem curso' THEN ca.codigo_curso
+        WHEN c.nome_curso <> 'Sem curso' THEN ca.codigo
         ELSE NULL
     END AS codigo_matricula,
     CASE  
@@ -21,8 +21,8 @@ LEFT JOIN
 LEFT JOIN 
     curso c ON ca.codigo_curso = c.codigo;
 `;
-const postAlunoCurso = "INSERT INTO curso_aluno (codigo_aluno, codigo_curso) VALUES ($1, $2)"
-const deleteAlunoCurso = "DELETE FROM curso_aluno WHERE codigo_aluno = $1 AND codigo_curso = $2"
+const postMatricula = "INSERT INTO curso_aluno (codigo_aluno, codigo_curso) VALUES ($1, $2)"
+const deleteMatricula = "DELETE FROM curso_aluno WHERE codigo = $1"
 
 module.exports = {
     getAluno,
@@ -30,7 +30,7 @@ module.exports = {
     putAluno,
     deleteAluno,
     getAlunoCurso,
-    postAlunoCurso,
-    deleteAlunoCurso
+    postMatricula,
+    deleteMatricula
 
 };
